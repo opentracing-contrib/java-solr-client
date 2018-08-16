@@ -28,6 +28,8 @@ HttpSolrClient client = new TracingHttpSolrClientBuilder(solrUrl, tracer).build(
 
 ```
 
+Usage of other `SolrClient` implementations requires providing `TracingHttpClient` as `HttpClient`.
+
 ## License
 
 [Apache 2.0 License](./LICENSE).
