@@ -28,7 +28,12 @@ HttpSolrClient client = new TracingHttpSolrClientBuilder(solrUrl, tracer).build(
 
 ```
 
-Usage of other `SolrClient` implementations requires providing `TracingHttpClient` as `HttpClient`.
+Usage of other `SolrClient` implementations requires providing `TracingHttpClient` as `HttpClient` e.g.:
+```java
+CloudSolrClient client = new CloudSolrClient.Builder(urls)
+        .withHttpClient(new TracingHttpClient(HttpClientUtil.createClient(null), tracer))
+        .build()
+```
 
 ## License
 
