@@ -20,6 +20,7 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
+import io.opentracing.util.GlobalTracer;
 import java.io.Closeable;
 import java.io.IOException;
 import org.apache.http.HttpHost;
@@ -35,10 +36,15 @@ import org.apache.http.protocol.HttpContext;
 
 public class TracingHttpClient implements HttpClient, Closeable {
 
-  static final String COMPONENT_NAME = "java-solr";
+  private static final String COMPONENT_NAME = "java-solr";
 
   private final HttpClient httpClient;
   private final Tracer tracer;
+
+  public TracingHttpClient(HttpClient httpClient) {
+    this.httpClient = httpClient;
+    this.tracer = GlobalTracer.get();
+  }
 
   public TracingHttpClient(HttpClient httpClient, Tracer tracer) {
     this.httpClient = httpClient;

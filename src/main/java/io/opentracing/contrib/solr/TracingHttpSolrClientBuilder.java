@@ -15,12 +15,18 @@ package io.opentracing.contrib.solr;
 
 import io.opentracing.Tracer;
 import io.opentracing.noop.NoopTracerFactory;
+import io.opentracing.util.GlobalTracer;
 import org.apache.http.client.HttpClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 
 public class TracingHttpSolrClientBuilder extends HttpSolrClient.Builder {
 
   private final Tracer tracer;
+
+  public TracingHttpSolrClientBuilder() {
+    super();
+    this.tracer = GlobalTracer.get();
+  }
 
   public TracingHttpSolrClientBuilder(Tracer tracer) {
     super();

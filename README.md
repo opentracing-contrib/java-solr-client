@@ -19,6 +19,9 @@ pom.xml
 ```java
 // Instantiate tracer
 Tracer tracer = ...
+
+// Optionally register it with GlobalTracer:
+GlobalTracer.register(tracer);
 ``` 
 
 ### HttpSolrClient
@@ -26,6 +29,8 @@ Tracer tracer = ...
 // Instantiate HttpSolrClient using TracingHttpSolrClientBuilder
 HttpSolrClient client = new TracingHttpSolrClientBuilder(solrUrl, tracer).build();
 
+// If tracer is registered with GlobalTracer:
+HttpSolrClient client = new TracingHttpSolrClientBuilder(solrUrl).build();
 ```
 
 ### SolrClient implementations
