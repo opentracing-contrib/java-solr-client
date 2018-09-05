@@ -157,6 +157,7 @@
             <exclude>mvnw.cmd</exclude>
             <exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
             <exclude>.coveralls.yml</exclude>
+            <exclude>solr/**</exclude>
           </excludes>
         </configuration>
         <executions>
