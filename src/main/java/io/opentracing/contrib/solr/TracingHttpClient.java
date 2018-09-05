@@ -18,6 +18,7 @@ import static io.opentracing.contrib.solr.SolrTracingUtils.onResponse;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.opentracing.noop.NoopSpan;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
@@ -36,19 +37,34 @@ import org.apache.http.protocol.HttpContext;
 
 public class TracingHttpClient implements HttpClient, Closeable {
 
-  private static final String COMPONENT_NAME = "java-solr";
+  static final String COMPONENT_NAME = "java-solr";
 
   private final HttpClient httpClient;
   private final Tracer tracer;
+  private final boolean skipStatusAction;
 
+  /**
+   * GlobalTracer is used to get tracer
+   */
+  public TracingHttpClient(HttpClient httpClient, boolean skipStatusAction) {
+    this(httpClient, GlobalTracer.get(), skipStatusAction);
+  }
+
+  /**
+   * GlobalTracer is used to get tracer
+   */
   public TracingHttpClient(HttpClient httpClient) {
-    this.httpClient = httpClient;
-    this.tracer = GlobalTracer.get();
+    this(httpClient, false);
   }
 
   public TracingHttpClient(HttpClient httpClient, Tracer tracer) {
+    this(httpClient, tracer, false);
+  }
+
+  public TracingHttpClient(HttpClient httpClient, Tracer tracer, boolean skipStatusAction) {
     this.httpClient = httpClient;
     this.tracer = tracer;
+    this.skipStatusAction = skipStatusAction;
   }
 
   @Override
@@ -185,10 +201,16 @@ public class TracingHttpClient implements HttpClient, Closeable {
   }
 
   private Span buildSpan(HttpRequest request) {
+    String url = request.getRequestLine().getUri();
+    if (skipStatusAction && url.contains("action=CLUSTERSTATUS")) {
+      return NoopSpan.INSTANCE;
+
+    }
+
     Tracer.SpanBuilder spanBuilder = tracer.buildSpan(request.getRequestLine().getMethod())
         .withTag(Tags.COMPONENT.getKey(), COMPONENT_NAME)
         .withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CLIENT)
-        .withTag(Tags.HTTP_URL.getKey(), request.getRequestLine().getUri());
+        .withTag(Tags.HTTP_URL.getKey(), url);
 
     Span span = spanBuilder.start();
     tracer
