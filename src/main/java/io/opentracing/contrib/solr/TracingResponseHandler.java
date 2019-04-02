@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The OpenTracing Authors
+ * Copyright 2018-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -41,7 +41,7 @@ public class TracingResponseHandler<T> implements ResponseHandler<T> {
   @Override
   public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
     Tags.HTTP_STATUS.set(span, response.getStatusLine().getStatusCode());
-    try (Scope ignored = tracer.scopeManager().activate(span, false)) {
+    try (Scope ignored = tracer.scopeManager().activate(span)) {
       try {
         return responseHandler.handleResponse(response);
       } catch (Exception e) {
