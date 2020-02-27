@@ -11,9 +11,9 @@ cache:
 
 before_install:
   # install and run Solr
-  - wget http://www.apache.org/dist/lucene/solr/7.7.1/solr-7.7.1.zip
-  - unzip solr-7.7.1.zip -d solr
-  - ./solr/solr-7.7.1/bin/solr start -e cloud -noprompt
+  - wget http://www.apache.org/dist/lucene/solr/8.4.1/solr-8.4.1.zip
+  - unzip solr-8.4.1.zip -d solr
+  - ./solr/solr-8.4.1/bin/solr start -e cloud -noprompt
 
   # allocate commits to CI, not the owner of the deploy key
   - git config user.name "opentracingci"
